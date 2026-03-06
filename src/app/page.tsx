@@ -11,6 +11,7 @@ import MonitoringModule from "@/components/monitoring/MonitoringModule";
 import BudgetModule from "@/components/budget/BudgetModule";
 import CrisisModule from "@/components/crisis/CrisisModule";
 import BudgetAnalysisModule from "@/components/budget-analysis/BudgetAnalysisModule";
+import GovernanceModule from "@/components/governance/GovernanceModule";
 import { alerts } from "@/data/mock-data";
 import { cn } from "@/lib/utils";
 import type { ModulePage } from "@/types";
@@ -47,6 +48,10 @@ const pageConfig: Record<ModulePage, { title: string; subtitle: string }> = {
   budget_analysis: {
     title: "Análise Orçamentária para Resiliência",
     subtitle: "Custo-benefício, simulação financeira, planejamento de investimentos e relatórios",
+  },
+  governance: {
+    title: "Governança e Conformidade",
+    subtitle: "RBAC, auditoria, LGPD, interoperabilidade e-PING e arquitetura de microsserviços",
   },
 };
 
@@ -89,6 +94,7 @@ export default function Home() {
           {currentPage === "budget" && <BudgetModule />}
           {currentPage === "crisis" && <CrisisModule />}
           {currentPage === "budget_analysis" && <BudgetAnalysisModule />}
+          {currentPage === "governance" && <GovernanceModule />}
         </div>
       </main>
     </div>

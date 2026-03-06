@@ -427,6 +427,125 @@ export interface BudgetReport {
   targetAudience: string;
 }
 
+// --- GovTech Governance Types ---
+export type UserRoleLevel = "admin" | "manager" | "analyst" | "operator" | "viewer" | "field_agent";
+export type DataClassification = "public" | "internal" | "confidential" | "restricted";
+export type ComplianceStatus = "compliant" | "partial" | "non_compliant" | "under_review";
+export type AuditActionType =
+  | "login"
+  | "logout"
+  | "data_access"
+  | "data_export"
+  | "data_modify"
+  | "report_generate"
+  | "alert_acknowledge"
+  | "config_change"
+  | "permission_change"
+  | "crisis_action"
+  | "api_call";
+
+export interface SystemUser {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRoleLevel;
+  agency: string;
+  municipality: string;
+  isActive: boolean;
+  lastLogin: string;
+  mfaEnabled: boolean;
+  permissions: Permission[];
+  dataAccess: DataClassification[];
+}
+
+export interface Permission {
+  module: string;
+  actions: ("read" | "write" | "delete" | "export" | "admin")[];
+}
+
+export interface AuditLogEntry {
+  id: string;
+  timestamp: string;
+  userId: string;
+  userName: string;
+  userRole: UserRoleLevel;
+  agency: string;
+  action: AuditActionType;
+  module: string;
+  resource: string;
+  details: string;
+  ipAddress: string;
+  success: boolean;
+  riskLevel: "low" | "medium" | "high";
+  dataClassification?: DataClassification;
+}
+
+export interface LGPDRecord {
+  id: string;
+  category: string;
+  dataType: string;
+  purpose: string;
+  legalBasis: string;
+  retentionPeriod: string;
+  classification: DataClassification;
+  anonymized: boolean;
+  consentRequired: boolean;
+  dpia: boolean; // Data Protection Impact Assessment
+  status: ComplianceStatus;
+  lastAudit: string;
+  responsibleOfficer: string;
+}
+
+export interface EPingStandard {
+  id: string;
+  category: "interconnection" | "security" | "integration" | "data_organization" | "content_access";
+  name: string;
+  description: string;
+  standard: string;
+  implementationStatus: ComplianceStatus;
+  adoptedTechnology: string;
+  notes: string;
+}
+
+export interface APIEndpoint {
+  id: string;
+  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+  path: string;
+  description: string;
+  module: string;
+  version: string;
+  authentication: "api_key" | "oauth2" | "jwt" | "gov_br";
+  rateLimit: string;
+  dataClassification: DataClassification;
+  ePingCompliant: boolean;
+  responseFormat: string;
+  status: "active" | "beta" | "deprecated" | "planned";
+}
+
+export interface MicroserviceNode {
+  id: string;
+  name: string;
+  description: string;
+  technology: string;
+  status: "running" | "degraded" | "offline" | "maintenance";
+  instances: number;
+  cpu: number;
+  memory: number;
+  requestsPerMin: number;
+  errorRate: number;
+  dependencies: string[];
+  tier: "frontend" | "api_gateway" | "service" | "data" | "infrastructure";
+}
+
+export interface ComplianceMetric {
+  category: string;
+  total: number;
+  compliant: number;
+  partial: number;
+  nonCompliant: number;
+  lastAssessment: string;
+}
+
 // --- Navigation ---
 export type ModulePage =
   | "dashboard"
@@ -436,4 +555,5 @@ export type ModulePage =
   | "monitoring"
   | "budget"
   | "crisis"
-  | "budget_analysis";
+  | "budget_analysis"
+  | "governance";
