@@ -20,7 +20,7 @@ export const systemUsers: SystemUser[] = [
     agency: "Defesa Civil do DF",
     municipality: "Brasília",
     isActive: true,
-    lastLogin: "2025-03-06T08:12:00",
+    lastLogin: "2026-03-06T08:12:00",
     mfaEnabled: true,
     permissions: [
       { module: "all", actions: ["read", "write", "delete", "export", "admin"] },
@@ -35,7 +35,7 @@ export const systemUsers: SystemUser[] = [
     agency: "Secretaria de Urbanismo",
     municipality: "Brasília",
     isActive: true,
-    lastLogin: "2025-03-06T07:45:00",
+    lastLogin: "2026-03-06T07:45:00",
     mfaEnabled: true,
     permissions: [
       { module: "dashboard", actions: ["read", "export"] },
@@ -55,7 +55,7 @@ export const systemUsers: SystemUser[] = [
     agency: "Secretaria de Fazenda",
     municipality: "Brasília",
     isActive: true,
-    lastLogin: "2025-03-05T16:30:00",
+    lastLogin: "2026-03-05T16:30:00",
     mfaEnabled: true,
     permissions: [
       { module: "dashboard", actions: ["read"] },
@@ -72,7 +72,7 @@ export const systemUsers: SystemUser[] = [
     agency: "Secretaria de Saúde",
     municipality: "Brasília",
     isActive: true,
-    lastLogin: "2025-03-06T09:01:00",
+    lastLogin: "2026-03-06T09:01:00",
     mfaEnabled: false,
     permissions: [
       { module: "dashboard", actions: ["read"] },
@@ -89,7 +89,7 @@ export const systemUsers: SystemUser[] = [
     agency: "Corpo de Bombeiros",
     municipality: "Brasília",
     isActive: true,
-    lastLogin: "2025-03-06T06:30:00",
+    lastLogin: "2026-03-06T06:30:00",
     mfaEnabled: true,
     permissions: [
       { module: "dashboard", actions: ["read"] },
@@ -107,7 +107,7 @@ export const systemUsers: SystemUser[] = [
     agency: "Secretaria de Meio Ambiente",
     municipality: "Brasília",
     isActive: true,
-    lastLogin: "2025-03-05T14:22:00",
+    lastLogin: "2026-03-05T14:22:00",
     mfaEnabled: false,
     permissions: [
       { module: "dashboard", actions: ["read"] },
@@ -125,7 +125,7 @@ export const systemUsers: SystemUser[] = [
     agency: "Agência Reguladora de Águas",
     municipality: "Taguatinga",
     isActive: true,
-    lastLogin: "2025-03-06T05:55:00",
+    lastLogin: "2026-03-06T05:55:00",
     mfaEnabled: true,
     permissions: [
       { module: "monitoring", actions: ["read", "write"] },
@@ -141,7 +141,7 @@ export const systemUsers: SystemUser[] = [
     agency: "Secretaria de Planejamento",
     municipality: "Brasília",
     isActive: false,
-    lastLogin: "2025-02-20T11:00:00",
+    lastLogin: "2026-02-20T11:00:00",
     mfaEnabled: false,
     permissions: [
       { module: "dashboard", actions: ["read"] },
@@ -157,7 +157,7 @@ export const systemUsers: SystemUser[] = [
     agency: "Secretaria de Infraestrutura",
     municipality: "Brasília",
     isActive: true,
-    lastLogin: "2025-03-06T07:10:00",
+    lastLogin: "2026-03-06T07:10:00",
     mfaEnabled: true,
     permissions: [
       { module: "dashboard", actions: ["read"] },
@@ -175,7 +175,7 @@ export const systemUsers: SystemUser[] = [
     agency: "Controladoria-Geral do DF",
     municipality: "Brasília",
     isActive: true,
-    lastLogin: "2025-03-06T08:50:00",
+    lastLogin: "2026-03-06T08:50:00",
     mfaEnabled: true,
     permissions: [
       { module: "governance", actions: ["read", "write", "delete", "export", "admin"] },
@@ -191,7 +191,7 @@ export const systemUsers: SystemUser[] = [
 export const auditLogs: AuditLogEntry[] = [
   {
     id: "log-001",
-    timestamp: "2025-03-06T09:01:23",
+    timestamp: "2026-03-06T09:01:23",
     userId: "user-001",
     userName: "Carlos Eduardo Ribeiro",
     userRole: "admin",
@@ -206,7 +206,7 @@ export const auditLogs: AuditLogEntry[] = [
   },
   {
     id: "log-002",
-    timestamp: "2025-03-06T08:55:12",
+    timestamp: "2026-03-06T08:55:12",
     userId: "user-003",
     userName: "Roberto Mendes Filho",
     userRole: "manager",
@@ -222,7 +222,7 @@ export const auditLogs: AuditLogEntry[] = [
   },
   {
     id: "log-003",
-    timestamp: "2025-03-06T08:42:00",
+    timestamp: "2026-03-06T08:42:00",
     userId: "user-005",
     userName: "Fernando Azevedo",
     userRole: "operator",
@@ -237,7 +237,7 @@ export const auditLogs: AuditLogEntry[] = [
   },
   {
     id: "log-004",
-    timestamp: "2025-03-06T08:30:45",
+    timestamp: "2026-03-06T08:30:45",
     userId: "user-002",
     userName: "Ana Paula Santos",
     userRole: "manager",
@@ -253,7 +253,7 @@ export const auditLogs: AuditLogEntry[] = [
   },
   {
     id: "log-005",
-    timestamp: "2025-03-06T08:15:33",
+    timestamp: "2026-03-06T08:15:33",
     userId: "user-008",
     userName: "Cláudia Vieira",
     userRole: "viewer",
@@ -269,7 +269,7 @@ export const auditLogs: AuditLogEntry[] = [
   },
   {
     id: "log-006",
-    timestamp: "2025-03-06T07:58:10",
+    timestamp: "2026-03-06T07:58:10",
     userId: "user-010",
     userName: "Juliana Freitas",
     userRole: "admin",
@@ -284,7 +284,7 @@ export const auditLogs: AuditLogEntry[] = [
   },
   {
     id: "log-007",
-    timestamp: "2025-03-06T07:45:00",
+    timestamp: "2026-03-06T07:45:00",
     userId: "user-007",
     userName: "Pedro Henrique Lima",
     userRole: "field_agent",
@@ -299,7 +299,7 @@ export const auditLogs: AuditLogEntry[] = [
   },
   {
     id: "log-008",
-    timestamp: "2025-03-06T07:30:22",
+    timestamp: "2026-03-06T07:30:22",
     userId: "user-001",
     userName: "Carlos Eduardo Ribeiro",
     userRole: "admin",
@@ -314,7 +314,7 @@ export const auditLogs: AuditLogEntry[] = [
   },
   {
     id: "log-009",
-    timestamp: "2025-03-06T07:15:00",
+    timestamp: "2026-03-06T07:15:00",
     userId: "user-009",
     userName: "Thiago Nascimento",
     userRole: "operator",
@@ -329,7 +329,7 @@ export const auditLogs: AuditLogEntry[] = [
   },
   {
     id: "log-010",
-    timestamp: "2025-03-06T06:45:11",
+    timestamp: "2026-03-06T06:45:11",
     userId: "user-006",
     userName: "Mariana Costa",
     userRole: "analyst",
@@ -344,7 +344,7 @@ export const auditLogs: AuditLogEntry[] = [
   },
   {
     id: "log-011",
-    timestamp: "2025-03-06T06:30:05",
+    timestamp: "2026-03-06T06:30:05",
     userId: "unknown",
     userName: "Tentativa não autenticada",
     userRole: "viewer",
@@ -359,7 +359,7 @@ export const auditLogs: AuditLogEntry[] = [
   },
   {
     id: "log-012",
-    timestamp: "2025-03-06T06:00:00",
+    timestamp: "2026-03-06T06:00:00",
     userId: "system",
     userName: "Sistema Automatizado",
     userRole: "admin",
@@ -390,7 +390,7 @@ export const lgpdRecords: LGPDRecord[] = [
     consentRequired: false,
     dpia: true,
     status: "compliant",
-    lastAudit: "2025-02-15",
+    lastAudit: "2026-02-15",
     responsibleOfficer: "DPO - Maria Helena Souza",
   },
   {
@@ -405,7 +405,7 @@ export const lgpdRecords: LGPDRecord[] = [
     consentRequired: false,
     dpia: false,
     status: "compliant",
-    lastAudit: "2025-02-20",
+    lastAudit: "2026-02-20",
     responsibleOfficer: "DPO - Maria Helena Souza",
   },
   {
@@ -420,7 +420,7 @@ export const lgpdRecords: LGPDRecord[] = [
     consentRequired: true,
     dpia: true,
     status: "compliant",
-    lastAudit: "2025-01-30",
+    lastAudit: "2026-01-30",
     responsibleOfficer: "DPO - Maria Helena Souza",
   },
   {
@@ -435,7 +435,7 @@ export const lgpdRecords: LGPDRecord[] = [
     consentRequired: false,
     dpia: true,
     status: "compliant",
-    lastAudit: "2025-02-28",
+    lastAudit: "2026-02-28",
     responsibleOfficer: "DPO - Maria Helena Souza",
   },
   {
@@ -450,7 +450,7 @@ export const lgpdRecords: LGPDRecord[] = [
     consentRequired: false,
     dpia: true,
     status: "partial",
-    lastAudit: "2025-02-10",
+    lastAudit: "2026-02-10",
     responsibleOfficer: "DPO - Maria Helena Souza",
   },
   {
@@ -465,7 +465,7 @@ export const lgpdRecords: LGPDRecord[] = [
     consentRequired: false,
     dpia: false,
     status: "compliant",
-    lastAudit: "2025-03-01",
+    lastAudit: "2026-03-01",
     responsibleOfficer: "DPO - Maria Helena Souza",
   },
   {
@@ -480,7 +480,7 @@ export const lgpdRecords: LGPDRecord[] = [
     consentRequired: false,
     dpia: false,
     status: "compliant",
-    lastAudit: "2025-02-25",
+    lastAudit: "2026-02-25",
     responsibleOfficer: "DPO - Maria Helena Souza",
   },
   {
@@ -495,7 +495,7 @@ export const lgpdRecords: LGPDRecord[] = [
     consentRequired: false,
     dpia: true,
     status: "under_review",
-    lastAudit: "2025-01-15",
+    lastAudit: "2026-01-15",
     responsibleOfficer: "DPO - Maria Helena Souza",
   },
 ];
@@ -1034,7 +1034,7 @@ export const complianceMetrics: ComplianceMetric[] = [
     compliant: 6,
     partial: 1,
     nonCompliant: 0,
-    lastAssessment: "2025-03-01",
+    lastAssessment: "2026-03-01",
   },
   {
     category: "e-PING - Interoperabilidade",
@@ -1042,7 +1042,7 @@ export const complianceMetrics: ComplianceMetric[] = [
     compliant: 8,
     partial: 2,
     nonCompliant: 0,
-    lastAssessment: "2025-02-28",
+    lastAssessment: "2026-02-28",
   },
   {
     category: "e-MAG - Acessibilidade",
@@ -1050,7 +1050,7 @@ export const complianceMetrics: ComplianceMetric[] = [
     compliant: 3,
     partial: 2,
     nonCompliant: 0,
-    lastAssessment: "2025-02-15",
+    lastAssessment: "2026-02-15",
   },
   {
     category: "ISO 27001 - Segurança da Informação",
@@ -1058,7 +1058,7 @@ export const complianceMetrics: ComplianceMetric[] = [
     compliant: 10,
     partial: 2,
     nonCompliant: 0,
-    lastAssessment: "2025-01-30",
+    lastAssessment: "2026-01-30",
   },
   {
     category: "Marco Civil da Internet",
@@ -1066,7 +1066,7 @@ export const complianceMetrics: ComplianceMetric[] = [
     compliant: 4,
     partial: 0,
     nonCompliant: 0,
-    lastAssessment: "2025-02-20",
+    lastAssessment: "2026-02-20",
   },
   {
     category: "Lei de Acesso à Informação (LAI)",
@@ -1074,7 +1074,7 @@ export const complianceMetrics: ComplianceMetric[] = [
     compliant: 5,
     partial: 1,
     nonCompliant: 0,
-    lastAssessment: "2025-02-25",
+    lastAssessment: "2026-02-25",
   },
 ];
 

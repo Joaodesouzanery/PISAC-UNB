@@ -35,17 +35,17 @@ export default function CrisisModule() {
 
   return (
     <div className="space-y-6">
-      {/* Tab Navigation */}
       <div className="flex gap-2 flex-wrap">
         {tabs.map(({ key, label, icon: Icon }) => (
           <button
             key={key}
             onClick={() => setView(key)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              view === key
-                ? "bg-primary-600 text-white shadow-sm"
-                : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
-            }`}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            style={{
+              backgroundColor: view === key ? "var(--accent-muted)" : "var(--bg-card)",
+              color: view === key ? "var(--accent)" : "var(--text-muted)",
+              border: `1px solid ${view === key ? "rgba(249,115,22,0.3)" : "var(--border-subtle)"}`,
+            }}
           >
             <Icon className="h-4 w-4" />
             {label}
