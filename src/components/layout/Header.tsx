@@ -1,6 +1,6 @@
 "use client";
 
-import { User, Clock, ShieldCheck, Lock, Network } from "lucide-react";
+import { User, Clock, ShieldCheck, Lock, Network, Search, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 
 interface HeaderProps {
@@ -31,37 +31,109 @@ export default function Header({ title, subtitle }: HeaderProps) {
   }, []);
 
   return (
-    <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
+    <header
+      className="px-6 py-3 flex items-center justify-between"
+      style={{
+        backgroundColor: "var(--bg-card)",
+        borderBottom: "1px solid var(--border-primary)",
+      }}
+    >
       <div>
-        <h2 className="text-lg font-bold text-gray-900">{title}</h2>
-        {subtitle && <p className="text-sm text-gray-500">{subtitle}</p>}
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-1.5 text-xs mb-0.5">
+          <span style={{ color: "var(--text-muted)" }}>PISAC</span>
+          <ChevronRight className="h-3 w-3" style={{ color: "var(--text-muted)" }} />
+          <span style={{ color: "var(--accent)" }}>{title}</span>
+        </div>
+        {subtitle && (
+          <p className="text-[11px]" style={{ color: "var(--text-muted)" }}>
+            {subtitle}
+          </p>
+        )}
       </div>
+
       <div className="flex items-center gap-3">
-        {/* GovTech Compliance Badges */}
+        {/* Search */}
+        <div className="hidden md:flex items-center relative">
+          <Search
+            className="absolute left-3 h-3.5 w-3.5"
+            style={{ color: "var(--text-muted)" }}
+          />
+          <input
+            type="text"
+            placeholder="Buscar..."
+            className="pl-9 pr-4 py-1.5 rounded-lg text-xs w-48 focus:w-64 transition-all"
+            style={{
+              backgroundColor: "var(--bg-elevated)",
+              border: "1px solid var(--border-primary)",
+              color: "var(--text-primary)",
+              outline: "none",
+            }}
+          />
+        </div>
+
+        {/* Compliance Badges */}
         <div className="hidden lg:flex items-center gap-1.5">
-          <span className="flex items-center gap-1 text-[9px] px-2 py-1 bg-success-50 text-success-700 rounded-full font-medium border border-success-200">
+          <span
+            className="flex items-center gap-1 text-[9px] px-2 py-1 rounded-full font-medium"
+            style={{
+              backgroundColor: "rgba(34, 197, 94, 0.1)",
+              color: "#4ade80",
+              border: "1px solid rgba(34, 197, 94, 0.2)",
+            }}
+          >
             <ShieldCheck className="h-3 w-3" /> LGPD
           </span>
-          <span className="flex items-center gap-1 text-[9px] px-2 py-1 bg-blue-50 text-blue-700 rounded-full font-medium border border-blue-200">
+          <span
+            className="flex items-center gap-1 text-[9px] px-2 py-1 rounded-full font-medium"
+            style={{
+              backgroundColor: "rgba(59, 130, 246, 0.1)",
+              color: "#60a5fa",
+              border: "1px solid rgba(59, 130, 246, 0.2)",
+            }}
+          >
             <Network className="h-3 w-3" /> e-PING
           </span>
-          <span className="flex items-center gap-1 text-[9px] px-2 py-1 bg-purple-50 text-purple-700 rounded-full font-medium border border-purple-200">
+          <span
+            className="flex items-center gap-1 text-[9px] px-2 py-1 rounded-full font-medium"
+            style={{
+              backgroundColor: "rgba(139, 92, 246, 0.1)",
+              color: "#a78bfa",
+              border: "1px solid rgba(139, 92, 246, 0.2)",
+            }}
+          >
             <Lock className="h-3 w-3" /> Gov.br
           </span>
         </div>
-        <div className="h-5 w-px bg-gray-200 hidden lg:block" />
-        <div className="flex items-center gap-1.5 text-sm text-gray-500">
-          <Clock className="h-4 w-4" />
-          <span className="font-mono text-xs">{currentTime}</span>
+
+        <div className="w-px h-5" style={{ backgroundColor: "var(--border-primary)" }} />
+
+        {/* Time */}
+        <div className="flex items-center gap-1.5" style={{ color: "var(--text-muted)" }}>
+          <Clock className="h-3.5 w-3.5" />
+          <span className="font-mono text-[11px]">{currentTime}</span>
         </div>
-        <div className="h-5 w-px bg-gray-200" />
-        <div className="flex items-center gap-2 text-sm text-gray-600">
-          <div className="h-8 w-8 bg-primary-100 text-primary-700 rounded-full flex items-center justify-center">
+
+        <div className="w-px h-5" style={{ backgroundColor: "var(--border-primary)" }} />
+
+        {/* User */}
+        <div className="flex items-center gap-2">
+          <div
+            className="h-8 w-8 rounded-full flex items-center justify-center"
+            style={{
+              backgroundColor: "var(--accent-muted)",
+              color: "var(--accent)",
+            }}
+          >
             <User className="h-4 w-4" />
           </div>
           <div className="hidden md:block">
-            <p className="text-xs font-medium text-gray-900">Carlos Ribeiro</p>
-            <p className="text-[9px] text-gray-400">Admin • Defesa Civil</p>
+            <p className="text-xs font-medium" style={{ color: "var(--text-primary)" }}>
+              Carlos Ribeiro
+            </p>
+            <p className="text-[9px]" style={{ color: "var(--text-muted)" }}>
+              Admin &bull; Defesa Civil
+            </p>
           </div>
         </div>
       </div>

@@ -106,28 +106,31 @@ export default function DashboardOverview() {
         {/* Rainfall Chart */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
           <div className="flex items-center gap-2 mb-4">
-            <CloudRain className="h-5 w-5 text-primary-600" />
-            <h3 className="text-sm font-bold text-gray-900">
+            <CloudRain className="h-5 w-5" style={{ color: "var(--accent)" }} />
+            <h3 className="text-xs font-bold uppercase tracking-widest" style={{ color: "var(--text-secondary)" }}>
               Precipitação Mensal (mm)
             </h3>
           </div>
           <ResponsiveContainer width="100%" height={240}>
             <AreaChart data={rainfallHistory}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-              <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-              <YAxis tick={{ fontSize: 12 }} />
-              <Tooltip />
+              <CartesianGrid strokeDasharray="3 3" stroke="#1e1f2e" />
+              <XAxis dataKey="month" tick={{ fontSize: 12, fill: "#7c7c98" }} />
+              <YAxis tick={{ fontSize: 12, fill: "#7c7c98" }} />
+              <Tooltip
+                contentStyle={{ backgroundColor: "#14151f", border: "1px solid #26273a", borderRadius: "8px", color: "#e6e6f0" }}
+                labelStyle={{ color: "#f97316" }}
+              />
               <Area
                 type="monotone"
                 dataKey="value"
-                stroke="#2563eb"
-                fill="#bfdbfe"
+                stroke="#f97316"
+                fill="rgba(249, 115, 22, 0.15)"
                 name="2026"
               />
               <Area
                 type="monotone"
                 dataKey="avg"
-                stroke="#94a3b8"
+                stroke="#606080"
                 fill="transparent"
                 strokeDasharray="5 5"
                 name="Média histórica"
@@ -139,8 +142,8 @@ export default function DashboardOverview() {
         {/* Risk Scenarios Summary */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
           <div className="flex items-center gap-2 mb-4">
-            <Shield className="h-5 w-5 text-primary-600" />
-            <h3 className="text-sm font-bold text-gray-900">
+            <Shield className="h-5 w-5" style={{ color: "var(--accent)" }} />
+            <h3 className="text-xs font-bold uppercase tracking-widest" style={{ color: "var(--text-secondary)" }}>
               Cenários de Risco Ativos
             </h3>
           </div>
@@ -188,7 +191,7 @@ export default function DashboardOverview() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Active Alerts */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-          <h3 className="text-sm font-bold text-gray-900 mb-3">
+          <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "var(--text-secondary)" }}>
             Alertas Recentes
           </h3>
           <div className="space-y-2">
@@ -227,7 +230,7 @@ export default function DashboardOverview() {
 
         {/* Vulnerability Rankings */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-          <h3 className="text-sm font-bold text-gray-900 mb-3">
+          <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "var(--text-secondary)" }}>
             Vulnerabilidade por Região
           </h3>
           <div className="space-y-3">
@@ -266,7 +269,7 @@ export default function DashboardOverview() {
 
         {/* Budget Overview */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-          <h3 className="text-sm font-bold text-gray-900 mb-3">
+          <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "var(--text-secondary)" }}>
             Orçamento por Categoria
           </h3>
           <div className="space-y-3">

@@ -48,7 +48,7 @@ export default function ProgressBar({
           )}
         </div>
       )}
-      <div className={cn("w-full bg-gray-200 rounded-full", sizeStyles[size])}>
+      <div className={cn("w-full rounded-full", sizeStyles[size])} style={{ backgroundColor: "var(--bg-muted, #26273a)" }}>
         <div
           className={cn(
             "rounded-full transition-all duration-500",

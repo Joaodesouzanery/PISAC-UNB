@@ -62,7 +62,7 @@ export default function Home() {
   const activeAlertCount = alerts.filter((a) => a.isActive).length;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen" style={{ backgroundColor: "var(--bg-base)" }}>
       <Sidebar
         currentPage={currentPage}
         onNavigate={setCurrentPage}

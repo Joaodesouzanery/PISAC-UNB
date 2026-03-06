@@ -41,29 +41,40 @@ export default function GovernanceModule() {
   return (
     <div className="space-y-6">
       {/* Compliance Banner */}
-      <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-lg p-4 text-white">
+      <div
+        className="rounded-lg p-4"
+        style={{
+          background: "linear-gradient(135deg, rgba(249, 115, 22, 0.12) 0%, rgba(249, 115, 22, 0.04) 100%)",
+          border: "1px solid rgba(249, 115, 22, 0.2)",
+        }}
+      >
         <div className="flex items-center gap-3 mb-2">
-          <ShieldCheck className="h-6 w-6" />
-          <h2 className="text-lg font-bold">Governança e Conformidade GovTech</h2>
+          <ShieldCheck className="h-6 w-6" style={{ color: "var(--accent)" }} />
+          <h2 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>
+            Governança e Conformidade GovTech
+          </h2>
         </div>
-        <p className="text-sm text-primary-100">
+        <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
           Painel de conformidade regulatória, controle de acesso baseado em papéis (RBAC),
           auditoria, LGPD, interoperabilidade e-PING e arquitetura de microsserviços.
         </p>
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex gap-1 bg-gray-100 rounded-lg p-1 overflow-x-auto">
+      <div
+        className="flex gap-1 rounded-lg p-1 overflow-x-auto"
+        style={{ backgroundColor: "var(--bg-elevated)" }}
+      >
         {tabs.map(({ id, label, icon: Icon }) => (
           <button
             key={id}
             onClick={() => setActiveTab(id)}
-            className={cn(
-              "flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium transition-all whitespace-nowrap",
-              activeTab === id
-                ? "bg-white text-primary-700 shadow-sm"
-                : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
-            )}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium transition-all whitespace-nowrap"
+            style={{
+              backgroundColor: activeTab === id ? "var(--bg-card)" : "transparent",
+              color: activeTab === id ? "var(--accent)" : "var(--text-muted)",
+              boxShadow: activeTab === id ? "0 1px 3px rgba(0,0,0,0.3)" : "none",
+            }}
           >
             <Icon className="h-3.5 w-3.5" />
             {label}

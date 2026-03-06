@@ -54,7 +54,7 @@ export default function MetricCard({
     >
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-500 truncate">{title}</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 truncate">{title}</p>
           <p className="mt-1 text-2xl font-bold text-gray-900">{value}</p>
           {subtitle && (
             <p className="mt-0.5 text-xs text-gray-400">{subtitle}</p>
