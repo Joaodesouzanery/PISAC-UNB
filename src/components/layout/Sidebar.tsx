@@ -17,6 +17,7 @@ import {
   Calculator,
   ShieldCheck,
   ChevronDown,
+  X,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -25,6 +26,8 @@ interface SidebarProps {
   collapsed: boolean;
   onToggle: () => void;
   alertCount: number;
+  mobileOpen: boolean;
+  onMobileClose: () => void;
 }
 
 interface NavGroup {
@@ -70,18 +73,16 @@ export default function Sidebar({
   collapsed,
   onToggle,
   alertCount,
+  mobileOpen,
+  onMobileClose,
 }: SidebarProps) {
-  return (
-    <aside
-      className={cn(
-        "fixed left-0 top-0 h-screen flex flex-col transition-all duration-300 z-50",
-        collapsed ? "w-16" : "w-64"
-      )}
-      style={{
-        backgroundColor: "var(--bg-card)",
-        borderRight: "1px solid var(--border-primary)",
-      }}
-    >
+  const handleNavigate = (page: ModulePage) => {
+    onNavigate(page);
+    onMobileClose();
+  };
+
+  const sidebarContent = (showLabels: boolean) => (
+    <>
       {/* Logo */}
       <div
         className="flex items-center gap-3 px-4 py-5"
@@ -93,27 +94,18 @@ export default function Sidebar({
         >
           <Shield className="h-5 w-5 text-white" />
         </div>
-        {!collapsed && (
+        {showLabels && (
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between">
               <div>
-                <p
-                  className="text-[10px] uppercase tracking-widest"
-                  style={{ color: "var(--text-muted)" }}
-                >
+                <p className="text-[10px] uppercase tracking-widest" style={{ color: "var(--text-muted)" }}>
                   Plataforma
                 </p>
-                <h1
-                  className="text-sm font-bold"
-                  style={{ color: "var(--text-primary)" }}
-                >
+                <h1 className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>
                   PISAC
                 </h1>
               </div>
-              <ChevronDown
-                className="h-4 w-4"
-                style={{ color: "var(--text-muted)" }}
-              />
+              <ChevronDown className="h-4 w-4" style={{ color: "var(--text-muted)" }} />
             </div>
           </div>
         )}
@@ -124,19 +116,18 @@ export default function Sidebar({
         <div
           className={cn(
             "mx-3 mt-3 flex items-center gap-2 rounded-lg px-3 py-2 cursor-pointer transition-colors",
-            collapsed && "justify-center px-2"
+            !showLabels && "justify-center px-2"
           )}
           style={{
             backgroundColor: "rgba(239, 68, 68, 0.12)",
             border: "1px solid rgba(239, 68, 68, 0.25)",
           }}
-          onClick={() => onNavigate("monitoring")}
+          onClick={() => handleNavigate("monitoring")}
         >
           <Bell className="h-4 w-4 flex-shrink-0 animate-pulse-dot text-danger-500" />
-          {!collapsed && (
+          {showLabels && (
             <span className="text-xs font-medium text-danger-400">
-              {alertCount} alerta{alertCount > 1 ? "s" : ""} ativo
-              {alertCount > 1 ? "s" : ""}
+              {alertCount} alerta{alertCount > 1 ? "s" : ""} ativo{alertCount > 1 ? "s" : ""}
             </span>
           )}
         </div>
@@ -146,7 +137,7 @@ export default function Sidebar({
       <nav className="flex-1 mt-4 px-3 overflow-y-auto scrollbar-thin space-y-5">
         {navGroups.map((group) => (
           <div key={group.title}>
-            {!collapsed && (
+            {showLabels && (
               <p
                 className="text-[10px] font-bold uppercase tracking-widest px-3 mb-2"
                 style={{ color: "var(--text-muted)" }}
@@ -160,23 +151,18 @@ export default function Sidebar({
                 return (
                   <button
                     key={page}
-                    onClick={() => onNavigate(page)}
+                    onClick={() => handleNavigate(page)}
                     className={cn(
-                      "sidebar-nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
-                      collapsed && "justify-center px-2"
+                      "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
+                      !showLabels && "justify-center px-2"
                     )}
                     style={{
-                      backgroundColor: isActive
-                        ? "var(--accent-muted)"
-                        : "transparent",
-                      color: isActive
-                        ? "var(--accent)"
-                        : "var(--text-secondary)",
+                      backgroundColor: isActive ? "var(--accent-muted)" : "transparent",
+                      color: isActive ? "var(--accent)" : "var(--text-secondary)",
                     }}
                     onMouseEnter={(e) => {
                       if (!isActive) {
-                        e.currentTarget.style.backgroundColor =
-                          "var(--bg-subtle)";
+                        e.currentTarget.style.backgroundColor = "var(--bg-subtle)";
                         e.currentTarget.style.color = "var(--text-primary)";
                       }
                     }}
@@ -186,10 +172,10 @@ export default function Sidebar({
                         e.currentTarget.style.color = "var(--text-secondary)";
                       }
                     }}
-                    title={collapsed ? label : undefined}
+                    title={!showLabels ? label : undefined}
                   >
                     <Icon className="h-5 w-5 flex-shrink-0" />
-                    {!collapsed && <span className="truncate">{label}</span>}
+                    {showLabels && <span className="truncate">{label}</span>}
                   </button>
                 );
               })}
@@ -197,35 +183,83 @@ export default function Sidebar({
           </div>
         ))}
       </nav>
+    </>
+  );
 
-      {/* Collapse Toggle */}
-      <div
-        className="p-3"
-        style={{ borderTop: "1px solid var(--border-primary)" }}
+  return (
+    <>
+      {/* Mobile overlay */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-40 lg:hidden"
+          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+          onClick={onMobileClose}
+        />
+      )}
+
+      {/* Mobile drawer */}
+      <aside
+        className={cn(
+          "fixed left-0 top-0 h-screen flex flex-col z-50 transition-transform duration-300 lg:hidden w-72",
+          mobileOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+        style={{
+          backgroundColor: "var(--bg-card)",
+          borderRight: "1px solid var(--border-primary)",
+        }}
       >
-        <button
-          onClick={onToggle}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors"
-          style={{ color: "var(--text-muted)" }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "var(--bg-subtle)";
-            e.currentTarget.style.color = "var(--text-secondary)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "transparent";
-            e.currentTarget.style.color = "var(--text-muted)";
-          }}
-        >
-          {collapsed ? (
-            <ChevronRight className="h-4 w-4" />
-          ) : (
-            <>
-              <ChevronLeft className="h-4 w-4" />
-              <span>Recolher</span>
-            </>
-          )}
-        </button>
-      </div>
-    </aside>
+        {/* Mobile close button */}
+        <div className="absolute top-4 right-3">
+          <button
+            onClick={onMobileClose}
+            className="p-1.5 rounded-lg"
+            style={{ color: "var(--text-muted)" }}
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+        {sidebarContent(true)}
+      </aside>
+
+      {/* Desktop sidebar */}
+      <aside
+        className={cn(
+          "fixed left-0 top-0 h-screen flex-col transition-all duration-300 z-50 hidden lg:flex",
+          collapsed ? "w-16" : "w-64"
+        )}
+        style={{
+          backgroundColor: "var(--bg-card)",
+          borderRight: "1px solid var(--border-primary)",
+        }}
+      >
+        {sidebarContent(!collapsed)}
+
+        {/* Collapse Toggle (desktop only) */}
+        <div className="p-3" style={{ borderTop: "1px solid var(--border-primary)" }}>
+          <button
+            onClick={onToggle}
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors"
+            style={{ color: "var(--text-muted)" }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "var(--bg-subtle)";
+              e.currentTarget.style.color = "var(--text-secondary)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.color = "var(--text-muted)";
+            }}
+          >
+            {collapsed ? (
+              <ChevronRight className="h-4 w-4" />
+            ) : (
+              <>
+                <ChevronLeft className="h-4 w-4" />
+                <span>Recolher</span>
+              </>
+            )}
+          </button>
+        </div>
+      </aside>
+    </>
   );
 }

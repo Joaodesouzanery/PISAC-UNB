@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 import DashboardOverview from "@/components/dashboard/DashboardOverview";
@@ -55,9 +56,10 @@ const pageConfig: Record<ModulePage, { title: string; subtitle: string }> = {
   },
 };
 
-export default function Home() {
+function AppContent() {
   const [currentPage, setCurrentPage] = useState<ModulePage>("dashboard");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const activeAlertCount = alerts.filter((a) => a.isActive).length;
 
@@ -69,21 +71,26 @@ export default function Home() {
         collapsed={sidebarCollapsed}
         onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
         alertCount={activeAlertCount}
+        mobileOpen={mobileMenuOpen}
+        onMobileClose={() => setMobileMenuOpen(false)}
       />
 
       <main
         className={cn(
           "transition-all duration-300",
-          sidebarCollapsed ? "ml-16" : "ml-64"
+          "lg:ml-64",
+          sidebarCollapsed && "lg:ml-16",
+          "ml-0"
         )}
       >
         <Header
           title={pageConfig[currentPage].title}
           subtitle={pageConfig[currentPage].subtitle}
+          onMenuToggle={() => setMobileMenuOpen(true)}
         />
 
         <div className={cn(
-          "p-6",
+          "p-3 sm:p-4 md:p-6",
           currentPage === "map" && "p-0"
         )}>
           {currentPage === "dashboard" && <DashboardOverview />}
@@ -98,5 +105,13 @@ export default function Home() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }
