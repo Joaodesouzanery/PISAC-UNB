@@ -4,20 +4,22 @@ import { useState } from "react";
 import {
   Calculator,
   TrendingUp,
-  BarChart3,
   FileText,
   PieChart,
+  Shield,
 } from "lucide-react";
 import CostBenefitPanel from "./CostBenefitPanel";
 import FinancialSimulation from "./FinancialSimulation";
 import InvestmentPlanning from "./InvestmentPlanning";
 import ReportGeneration from "./ReportGeneration";
+import ComplianceReports from "./ComplianceReports";
 
 type AnalysisView =
   | "cost_benefit"
   | "financial_sim"
   | "investment"
-  | "reports";
+  | "reports"
+  | "compliance";
 
 export default function BudgetAnalysisModule() {
   const [view, setView] = useState<AnalysisView>("cost_benefit");
@@ -27,6 +29,7 @@ export default function BudgetAnalysisModule() {
     { key: "financial_sim", label: "Simulação Financeira", icon: TrendingUp },
     { key: "investment", label: "Planejamento de Investimentos", icon: PieChart },
     { key: "reports", label: "Relatórios", icon: FileText },
+    { key: "compliance", label: "Conformidade (TCU/TCE)", icon: Shield },
   ];
 
   return (
@@ -36,11 +39,12 @@ export default function BudgetAnalysisModule() {
           <button
             key={key}
             onClick={() => setView(key)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              view === key
-                ? "bg-primary-600 text-white shadow-sm"
-                : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
-            }`}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            style={{
+              backgroundColor: view === key ? "var(--accent-muted)" : "var(--bg-card)",
+              color: view === key ? "var(--accent)" : "var(--text-muted)",
+              border: `1px solid ${view === key ? "rgba(249,115,22,0.3)" : "var(--border-subtle)"}`,
+            }}
           >
             <Icon className="h-4 w-4" />
             {label}
@@ -52,6 +56,7 @@ export default function BudgetAnalysisModule() {
       {view === "financial_sim" && <FinancialSimulation />}
       {view === "investment" && <InvestmentPlanning />}
       {view === "reports" && <ReportGeneration />}
+      {view === "compliance" && <ComplianceReports />}
     </div>
   );
 }

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
-import { sensors, infrastructures, alerts } from "@/data/mock-data";
+import { sensors as rawSensors, infrastructures, alerts } from "@/data/mock-data";
 import {
   riskZones,
   evacuationRoutes,
@@ -93,6 +93,16 @@ export default function MapModule() {
   const [showBIM, setShowBIM] = useState(false);
   const [activeBIMModel, setActiveBIMModel] = useState<string | null>(null);
 
+  // Real-time sensor refresh
+  const [refreshInterval, setRefreshInterval] = useState(10);
+  const [liveSensors, setLiveSensors] = useState(rawSensors);
+  const [lastRefresh, setLastRefresh] = useState(Date.now());
+  const refreshTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Mobile panel toggle
+  const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
+  const [enableClustering, setEnableClustering] = useState(true);
+
   // Geocoding
   const [searchQuery, setSearchQuery] = useState("");
   const [searchCoords, setSearchCoords] = useState<[number, number] | null>(null);
@@ -104,6 +114,30 @@ export default function MapModule() {
   const [routeTo, setRouteTo] = useState("");
   const [routePoints, setRoutePoints] = useState<[number, number][] | null>(null);
 
+  // Real-time sensor simulation
+  useEffect(() => {
+    if (refreshTimerRef.current) clearInterval(refreshTimerRef.current);
+    refreshTimerRef.current = setInterval(() => {
+      setLiveSensors((prev) =>
+        prev.map((s) => {
+          const drift = (Math.random() - 0.5) * s.value * 0.05;
+          const newValue = Math.round((s.value + drift) * 10) / 10;
+          const newStatus =
+            newValue >= s.thresholds.critical ? "critical" :
+            newValue >= s.thresholds.warning ? "warning" : s.status === "offline" ? "offline" : "online";
+          return { ...s, value: Math.max(0, newValue), status: newStatus, lastUpdate: new Date().toISOString() };
+        })
+      );
+      setLastRefresh(Date.now());
+    }, refreshInterval * 1000);
+    return () => { if (refreshTimerRef.current) clearInterval(refreshTimerRef.current); };
+  }, [refreshInterval]);
+
+  // Open mobile detail when item selected
+  useEffect(() => {
+    if (selectedItem) setMobileDetailOpen(true);
+  }, [selectedItem]);
+
   const toggleLayer = useCallback((layer: LayerType) => {
     setActiveLayers((prev) => {
       const next = new Set(prev);
@@ -114,9 +148,9 @@ export default function MapModule() {
   }, []);
 
   const filteredSensors = useMemo(() => {
-    if (filterStatus === "all") return sensors;
-    return sensors.filter((s) => s.status === filterStatus);
-  }, [filterStatus]);
+    if (filterStatus === "all") return liveSensors;
+    return liveSensors.filter((s) => s.status === filterStatus);
+  }, [filterStatus, liveSensors]);
 
   // Geocoding handler
   const handleSearch = () => {
@@ -180,8 +214,24 @@ export default function MapModule() {
         <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "var(--text-muted)" }}>
           Camadas:
         </span>
+        {/* Real-time indicator */}
+        <div className="flex items-center gap-1.5 mr-1">
+          <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: "#22c55e" }} />
+          <select
+            value={refreshInterval}
+            onChange={(e) => setRefreshInterval(Number(e.target.value))}
+            className="text-[10px] rounded px-1 py-0.5"
+            style={{ backgroundColor: "var(--bg-elevated)", border: "1px solid var(--border-subtle)", color: "var(--text-muted)" }}
+          >
+            <option value={5}>5s</option>
+            <option value={10}>10s</option>
+            <option value={30}>30s</option>
+            <option value={60}>60s</option>
+          </select>
+        </div>
+
         {[
-          { key: "sensors" as LayerType, icon: Radio, label: "Sensores", count: sensors.length },
+          { key: "sensors" as LayerType, icon: Radio, label: "Sensores", count: liveSensors.length },
           { key: "infrastructure" as LayerType, icon: Building2, label: "Infra BIM", count: infrastructures.length },
           { key: "alerts" as LayerType, icon: AlertTriangle, label: "Alertas", count: alerts.filter((a) => a.isActive).length },
         ].map(({ key, icon: Icon, label, count }) => (
@@ -455,6 +505,7 @@ export default function MapModule() {
             showRiskZones={showRiskZones}
             showEvacRoutes={showEvacRoutes}
             showHeatmap={showHeatmap}
+            enableClustering={enableClustering}
             onSelectSensor={(s) => { setSelectedItem({ type: "sensor", data: s }); setDetailTab("info"); }}
             onSelectInfrastructure={(i) => { setSelectedItem({ type: "infrastructure", data: i }); setDetailTab("info"); }}
             onSelectAlert={(a) => { setSelectedItem({ type: "alert", data: a }); setDetailTab("info"); }}
@@ -487,10 +538,16 @@ export default function MapModule() {
           </div>
         </div>
 
-        {/* Detail Panel */}
+        {/* Detail Panel - responsive: slide-over on mobile, sidebar on desktop */}
         {selectedItem && (
           <div
-            className="w-80 lg:w-96 overflow-y-auto scrollbar-thin flex-shrink-0 flex flex-col"
+            className={`
+              fixed inset-y-0 right-0 z-[600] w-full sm:w-80 lg:w-96
+              md:static md:z-auto
+              overflow-y-auto scrollbar-thin flex-shrink-0 flex flex-col
+              transition-transform duration-300
+              ${mobileDetailOpen ? "translate-x-0" : "translate-x-full md:translate-x-0"}
+            `}
             style={{
               backgroundColor: "var(--bg-card)",
               borderLeft: "1px solid var(--border-primary)",
@@ -499,7 +556,7 @@ export default function MapModule() {
             {/* Header */}
             <div className="px-4 py-3 flex items-center justify-between flex-shrink-0" style={{ borderBottom: "1px solid var(--border-primary)" }}>
               <h3 className="text-xs font-bold uppercase tracking-widest" style={{ color: "var(--text-secondary)" }}>Detalhes</h3>
-              <button onClick={() => setSelectedItem(null)} style={{ color: "var(--text-muted)" }}>
+              <button onClick={() => { setSelectedItem(null); setMobileDetailOpen(false); }} style={{ color: "var(--text-muted)" }}>
                 <X className="h-4 w-4" />
               </button>
             </div>

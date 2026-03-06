@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { Sensor, Infrastructure, Alert } from "@/types";
@@ -15,6 +15,7 @@ interface MapViewProps {
   showRiskZones: boolean;
   showEvacRoutes: boolean;
   showHeatmap: boolean;
+  enableClustering?: boolean;
   onSelectSensor: (sensor: Sensor) => void;
   onSelectInfrastructure: (infra: Infrastructure) => void;
   onSelectAlert: (alert: Alert) => void;
@@ -86,6 +87,7 @@ export default function MapView({
   showRiskZones,
   showEvacRoutes,
   showHeatmap,
+  enableClustering = true,
   onSelectSensor,
   onSelectInfrastructure,
   onSelectAlert,
@@ -210,17 +212,63 @@ export default function MapView({
       layersRef.current.push(heatLayer);
     }
 
-    // --- Sensors layer ---
+    // --- Sensors layer (with optional grid-based clustering) ---
     const sensorLayer = L.layerGroup();
-    sensors.forEach((sensor) => {
-      const marker = L.marker([sensor.lat, sensor.lng], { icon: getSensorIcon(sensor.status) });
-      marker.on("click", () => onSelectSensor(sensor));
-      marker.bindTooltip(
-        `<strong>${sensor.name}</strong><br/><span style="font-size:13px;font-weight:bold">${sensor.value} ${sensor.unit}</span><br/>Status: ${sensor.status}`,
-        { direction: "top", offset: [0, -10], className: "dark-tooltip" }
-      );
-      marker.addTo(sensorLayer);
-    });
+    if (enableClustering && sensors.length > 10 && mapRef.current.getZoom() < 13) {
+      // Simple grid clustering for performance at low zoom
+      const gridSize = 0.03;
+      const clusters: Record<string, { sensors: Sensor[]; lat: number; lng: number }> = {};
+      sensors.forEach((sensor) => {
+        const key = `${Math.round(sensor.lat / gridSize)}_${Math.round(sensor.lng / gridSize)}`;
+        if (!clusters[key]) clusters[key] = { sensors: [], lat: 0, lng: 0 };
+        clusters[key].sensors.push(sensor);
+        clusters[key].lat += sensor.lat;
+        clusters[key].lng += sensor.lng;
+      });
+      Object.values(clusters).forEach((cluster) => {
+        const avgLat = cluster.lat / cluster.sensors.length;
+        const avgLng = cluster.lng / cluster.sensors.length;
+        if (cluster.sensors.length === 1) {
+          const sensor = cluster.sensors[0];
+          const marker = L.marker([sensor.lat, sensor.lng], { icon: getSensorIcon(sensor.status) });
+          marker.on("click", () => onSelectSensor(sensor));
+          marker.bindTooltip(
+            `<strong>${sensor.name}</strong><br/><span style="font-size:13px;font-weight:bold">${sensor.value} ${sensor.unit}</span><br/>Status: ${sensor.status}`,
+            { direction: "top", offset: [0, -10], className: "dark-tooltip" }
+          );
+          marker.addTo(sensorLayer);
+        } else {
+          const hasCritical = cluster.sensors.some((s) => s.status === "critical");
+          const hasWarning = cluster.sensors.some((s) => s.status === "warning");
+          const clusterColor = hasCritical ? "#ef4444" : hasWarning ? "#f59e0b" : "#22c55e";
+          const clusterIcon = L.divIcon({
+            html: `<div style="width:32px;height:32px;border-radius:50%;background:${clusterColor};border:3px solid rgba(255,255,255,0.9);box-shadow:0 2px 8px rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;color:white">${cluster.sensors.length}</div>`,
+            iconSize: [32, 32],
+            iconAnchor: [16, 16],
+            className: "",
+          });
+          const marker = L.marker([avgLat, avgLng], { icon: clusterIcon });
+          marker.bindTooltip(
+            `<strong>${cluster.sensors.length} sensores</strong><br/>${hasCritical ? "⚠ Inclui sensores críticos" : hasWarning ? "⚠ Inclui sensores em atenção" : "Todos online"}`,
+            { direction: "top", offset: [0, -18], className: "dark-tooltip" }
+          );
+          marker.on("click", () => {
+            mapRef.current?.setView([avgLat, avgLng], mapRef.current.getZoom() + 2, { animate: true });
+          });
+          marker.addTo(sensorLayer);
+        }
+      });
+    } else {
+      sensors.forEach((sensor) => {
+        const marker = L.marker([sensor.lat, sensor.lng], { icon: getSensorIcon(sensor.status) });
+        marker.on("click", () => onSelectSensor(sensor));
+        marker.bindTooltip(
+          `<strong>${sensor.name}</strong><br/><span style="font-size:13px;font-weight:bold">${sensor.value} ${sensor.unit}</span><br/>Status: ${sensor.status}`,
+          { direction: "top", offset: [0, -10], className: "dark-tooltip" }
+        );
+        marker.addTo(sensorLayer);
+      });
+    }
     sensorLayer.addTo(mapRef.current);
     layersRef.current.push(sensorLayer);
 
@@ -251,7 +299,16 @@ export default function MapView({
     });
     alertLayer.addTo(mapRef.current);
     layersRef.current.push(alertLayer);
-  }, [sensors, infrastructures, alerts, riskZones, evacuationRoutes, showRiskZones, showEvacRoutes, showHeatmap, onSelectSensor, onSelectInfrastructure, onSelectAlert]);
+  }, [sensors, infrastructures, alerts, riskZones, evacuationRoutes, showRiskZones, showEvacRoutes, showHeatmap, enableClustering, onSelectSensor, onSelectInfrastructure, onSelectAlert]);
+
+  // Re-render layers on zoom change for clustering
+  const [zoomLevel, setZoomLevel] = useState(11);
+  useEffect(() => {
+    if (!mapRef.current) return;
+    const onZoom = () => setZoomLevel(mapRef.current?.getZoom() || 11);
+    mapRef.current.on("zoomend", onZoom);
+    return () => { mapRef.current?.off("zoomend", onZoom); };
+  }, []);
 
   // Search marker
   useEffect(() => {

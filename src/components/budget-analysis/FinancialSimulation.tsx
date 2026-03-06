@@ -3,15 +3,12 @@
 import { useState } from "react";
 import { disasterFinancialScenarios, expectedAnnualLoss } from "@/data/budget-analysis-data";
 import { formatCurrency, cn } from "@/lib/utils";
-import ProgressBar from "@/components/shared/ProgressBar";
 import {
   TrendingUp,
   AlertTriangle,
   DollarSign,
   Clock,
   Shield,
-  ChevronDown,
-  ChevronUp,
   Zap,
 } from "lucide-react";
 import {
@@ -23,7 +20,6 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  LineChart,
   Line,
   ComposedChart,
   Area,
@@ -54,7 +50,6 @@ export default function FinancialSimulation() {
     disasterFinancialScenarios[0]
   );
   const [isSimulating, setIsSimulating] = useState(false);
-  const [expandedScenario, setExpandedScenario] = useState<string | null>(null);
 
   const runSimulation = () => {
     setIsSimulating(true);
@@ -95,20 +90,23 @@ export default function FinancialSimulation() {
     };
   });
 
+  const cardStyle = { backgroundColor: "var(--bg-card)", border: "1px solid var(--border-primary)" };
+  const tooltipStyle = { backgroundColor: "var(--bg-card)", border: "1px solid var(--border-primary)", borderRadius: 8, fontSize: 11 };
+
   return (
     <div className="space-y-6">
       {/* Expected Annual Loss Chart */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-        <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
-          <TrendingUp className="h-4 w-4 text-primary-600" />
+      <div className="rounded-xl p-4" style={cardStyle}>
+        <h3 className="text-sm font-bold mb-3 flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
+          <TrendingUp className="h-4 w-4" style={{ color: "var(--accent)" }} />
           Perda Anual Esperada vs. Investimentos em Mitigação (R$ milhões)
         </h3>
         <ResponsiveContainer width="100%" height={280}>
           <ComposedChart data={expectedAnnualLoss}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-            <XAxis dataKey="year" tick={{ fontSize: 11 }} />
-            <YAxis tick={{ fontSize: 11 }} />
-            <Tooltip formatter={(value: number) => [`R$ ${value}M`, ""]} />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" />
+            <XAxis dataKey="year" tick={{ fontSize: 11, fill: "var(--text-muted)" }} />
+            <YAxis tick={{ fontSize: 11, fill: "var(--text-muted)" }} />
+            <Tooltip contentStyle={tooltipStyle} formatter={(value: number) => [`R$ ${value}M`, ""]} />
             <Legend wrapperStyle={{ fontSize: 11 }} />
             <Area type="monotone" dataKey="investimento" fill="#bfdbfe" stroke="#93c5fd" name="Investimento Acumulado" />
             <Line type="monotone" dataKey="semMitigacao" stroke="#ef4444" strokeWidth={2} name="Perda s/ Mitigação" dot={{ r: 3 }} />
@@ -118,8 +116,8 @@ export default function FinancialSimulation() {
       </div>
 
       {/* Scenario Selector */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-        <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
+      <div className="rounded-xl p-4" style={cardStyle}>
+        <h3 className="text-sm font-bold mb-3 flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
           <Zap className="h-4 w-4 text-warning-600" />
           Selecione um Cenário de Desastre para Simulação
         </h3>
@@ -127,26 +125,26 @@ export default function FinancialSimulation() {
           {disasterFinancialScenarios.map((scenario) => {
             const sDirect = Object.values(scenario.directCosts).reduce((s, v) => s + v, 0);
             const sIndirect = Object.values(scenario.indirectCosts).reduce((s, v) => s + v, 0);
+            const isSelected = selectedScenario.id === scenario.id;
 
             return (
               <button
                 key={scenario.id}
                 onClick={() => setSelectedScenario(scenario)}
-                className={cn(
-                  "text-left p-3 rounded-lg border-2 transition-all",
-                  selectedScenario.id === scenario.id
-                    ? "border-primary-400 bg-primary-50 shadow-sm"
-                    : "border-gray-200 bg-white hover:border-gray-300"
-                )}
+                className="text-left p-3 rounded-lg transition-all"
+                style={{
+                  backgroundColor: isSelected ? "var(--accent-muted)" : "var(--bg-elevated)",
+                  border: `2px solid ${isSelected ? "var(--accent)" : "var(--border-subtle)"}`,
+                }}
               >
                 <div className="flex items-center justify-between mb-1">
                   <span className={cn("text-[10px] px-2 py-0.5 rounded font-medium", riskColors[scenario.fiscalRiskRating])}>
                     Risco: {riskLabels[scenario.fiscalRiskRating]}
                   </span>
-                  <span className="text-[10px] text-gray-400">{scenario.recurrence}</span>
+                  <span className="text-[10px]" style={{ color: "var(--text-muted)" }}>{scenario.recurrence}</span>
                 </div>
-                <p className="text-xs font-medium text-gray-900 leading-tight mt-1">{scenario.name}</p>
-                <div className="flex justify-between mt-2 text-[10px] text-gray-500">
+                <p className="text-xs font-medium leading-tight mt-1" style={{ color: "var(--text-primary)" }}>{scenario.name}</p>
+                <div className="flex justify-between mt-2 text-[10px]" style={{ color: "var(--text-muted)" }}>
                   <span>Custo: {formatCurrency(sDirect + sIndirect)}</span>
                   <span>Impacto: {scenario.budgetImpactPercent}%</span>
                 </div>
@@ -158,12 +156,12 @@ export default function FinancialSimulation() {
           <button
             onClick={runSimulation}
             disabled={isSimulating}
-            className={cn(
-              "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
-              isSimulating
-                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                : "bg-primary-600 text-white hover:bg-primary-700"
-            )}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            style={{
+              backgroundColor: isSimulating ? "var(--bg-elevated)" : "var(--accent)",
+              color: isSimulating ? "var(--text-muted)" : "#fff",
+              cursor: isSimulating ? "not-allowed" : "pointer",
+            }}
           >
             <Zap className="h-4 w-4" />
             {isSimulating ? "Simulando..." : "Executar Simulação Financeira"}
@@ -174,8 +172,8 @@ export default function FinancialSimulation() {
       {/* Scenario Detail */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Cost Breakdown */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-          <h3 className="text-sm font-bold text-gray-900 mb-3">
+        <div className="rounded-xl p-4" style={cardStyle}>
+          <h3 className="text-sm font-bold mb-3" style={{ color: "var(--text-primary)" }}>
             Composição de Custos Diretos
           </h3>
           <ResponsiveContainer width="100%" height={250}>
@@ -186,22 +184,22 @@ export default function FinancialSimulation() {
                   <Cell key={`cell-${i}`} fill={PIE_COLORS[i % PIE_COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip formatter={(value: number) => formatCurrency(value)} />
+              <Tooltip contentStyle={tooltipStyle} formatter={(value: number) => formatCurrency(value)} />
             </PieChart>
           </ResponsiveContainer>
         </div>
 
         {/* Funding Sources */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-          <h3 className="text-sm font-bold text-gray-900 mb-3">
+        <div className="rounded-xl p-4" style={cardStyle}>
+          <h3 className="text-sm font-bold mb-3" style={{ color: "var(--text-primary)" }}>
             Fontes de Financiamento
           </h3>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={fundingData} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-              <XAxis type="number" tick={{ fontSize: 10 }} tickFormatter={(v) => `R$${(v / 1000000).toFixed(0)}M`} />
-              <YAxis dataKey="name" type="category" tick={{ fontSize: 10 }} width={120} />
-              <Tooltip formatter={(value: number) => formatCurrency(value)} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" />
+              <XAxis type="number" tick={{ fontSize: 10, fill: "var(--text-muted)" }} tickFormatter={(v) => `R$${(v / 1000000).toFixed(0)}M`} />
+              <YAxis dataKey="name" type="category" tick={{ fontSize: 10, fill: "var(--text-muted)" }} width={120} />
+              <Tooltip contentStyle={tooltipStyle} formatter={(value: number) => formatCurrency(value)} />
               <Bar dataKey="value" fill="#3b82f6" name="Valor" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
@@ -209,60 +207,40 @@ export default function FinancialSimulation() {
       </div>
 
       {/* Financial Summary */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-        <h3 className="text-sm font-bold text-gray-900 mb-3">
+      <div className="rounded-xl p-4" style={cardStyle}>
+        <h3 className="text-sm font-bold mb-3" style={{ color: "var(--text-primary)" }}>
           Resumo do Impacto Financeiro - {selectedScenario.name}
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
-          <div className="bg-danger-50 rounded-lg p-3 text-center">
-            <p className="text-[10px] text-danger-700">Custo Direto</p>
-            <p className="text-sm font-bold text-danger-800">{formatCurrency(totalDirect)}</p>
-          </div>
-          <div className="bg-orange-50 rounded-lg p-3 text-center">
-            <p className="text-[10px] text-orange-700">Custo Indireto</p>
-            <p className="text-sm font-bold text-orange-800">{formatCurrency(totalIndirect)}</p>
-          </div>
-          <div className="bg-red-50 rounded-lg p-3 text-center border-2 border-red-200">
-            <p className="text-[10px] text-red-700 font-bold">CUSTO TOTAL</p>
-            <p className="text-sm font-bold text-red-800">{formatCurrency(totalCost)}</p>
-          </div>
-          <div className="bg-primary-50 rounded-lg p-3 text-center">
-            <p className="text-[10px] text-primary-700">Financiamento</p>
-            <p className="text-sm font-bold text-primary-800">{formatCurrency(totalFunding)}</p>
-          </div>
-          <div className={cn("rounded-lg p-3 text-center border-2", gap > 0 ? "bg-danger-50 border-danger-300" : "bg-success-50 border-success-300")}>
-            <p className={cn("text-[10px] font-bold", gap > 0 ? "text-danger-700" : "text-success-700")}>
-              {gap > 0 ? "DÉFICIT" : "SUPERÁVIT"}
-            </p>
-            <p className={cn("text-sm font-bold", gap > 0 ? "text-danger-800" : "text-success-800")}>
-              {formatCurrency(Math.abs(gap))}
-            </p>
-          </div>
-          <div className="bg-gray-50 rounded-lg p-3 text-center">
-            <p className="text-[10px] text-gray-600">Recuperação</p>
-            <p className="text-sm font-bold text-gray-900">{selectedScenario.recoveryTimeMonths} meses</p>
-          </div>
-          <div className="bg-gray-50 rounded-lg p-3 text-center">
-            <p className="text-[10px] text-gray-600">Impacto Orçamento</p>
-            <p className={cn("text-sm font-bold", selectedScenario.budgetImpactPercent > 20 ? "text-danger-600" : "text-warning-600")}>
-              {selectedScenario.budgetImpactPercent}%
-            </p>
-          </div>
+          {[
+            { label: "Custo Direto", value: formatCurrency(totalDirect), bg: "rgba(239,68,68,0.1)", color: "#ef4444" },
+            { label: "Custo Indireto", value: formatCurrency(totalIndirect), bg: "rgba(249,115,22,0.1)", color: "#f97316" },
+            { label: "CUSTO TOTAL", value: formatCurrency(totalCost), bg: "rgba(239,68,68,0.15)", color: "#dc2626", bold: true },
+            { label: "Financiamento", value: formatCurrency(totalFunding), bg: "rgba(59,130,246,0.1)", color: "#3b82f6" },
+            { label: gap > 0 ? "DÉFICIT" : "SUPERÁVIT", value: formatCurrency(Math.abs(gap)), bg: gap > 0 ? "rgba(239,68,68,0.15)" : "rgba(34,197,94,0.15)", color: gap > 0 ? "#dc2626" : "#22c55e", bold: true },
+            { label: "Recuperação", value: `${selectedScenario.recoveryTimeMonths} meses`, bg: "var(--bg-elevated)", color: "var(--text-primary)" },
+            { label: "Impacto Orçamento", value: `${selectedScenario.budgetImpactPercent}%`, bg: "var(--bg-elevated)", color: selectedScenario.budgetImpactPercent > 20 ? "#ef4444" : "#f59e0b" },
+          ].map(({ label, value, bg, color, bold }) => (
+            <div key={label} className="rounded-lg p-3 text-center" style={{ backgroundColor: bg, border: bold ? `2px solid ${color}` : undefined }}>
+              <p className="text-[10px] font-medium" style={{ color }}>{label}</p>
+              <p className="text-sm font-bold" style={{ color }}>{value}</p>
+            </div>
+          ))}
         </div>
       </div>
 
       {/* Scenario Comparison */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-        <h3 className="text-sm font-bold text-gray-900 mb-3">
+      <div className="rounded-xl p-4" style={cardStyle}>
+        <h3 className="text-sm font-bold mb-3" style={{ color: "var(--text-primary)" }}>
           Comparativo de Cenários (R$ milhões)
         </h3>
         <ResponsiveContainer width="100%" height={280}>
           <BarChart data={scenarioComparison}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-            <XAxis dataKey="name" tick={{ fontSize: 9 }} angle={-10} />
-            <YAxis yAxisId="left" tick={{ fontSize: 10 }} />
-            <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} domain={[0, 40]} />
-            <Tooltip />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" />
+            <XAxis dataKey="name" tick={{ fontSize: 9, fill: "var(--text-muted)" }} angle={-10} />
+            <YAxis yAxisId="left" tick={{ fontSize: 10, fill: "var(--text-muted)" }} />
+            <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10, fill: "var(--text-muted)" }} domain={[0, 40]} />
+            <Tooltip contentStyle={tooltipStyle} />
             <Legend wrapperStyle={{ fontSize: 10 }} />
             <Bar yAxisId="left" dataKey="custoDireto" fill="#ef4444" name="Custo Direto (R$M)" stackId="cost" radius={[0, 0, 0, 0]} />
             <Bar yAxisId="left" dataKey="custoIndireto" fill="#f97316" name="Custo Indireto (R$M)" stackId="cost" radius={[4, 4, 0, 0]} />
