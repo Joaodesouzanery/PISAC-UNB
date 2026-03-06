@@ -76,6 +76,9 @@ function AppContent() {
       />
 
       <main
+        id="main-content"
+        role="main"
+        aria-label="Conteúdo principal"
         className={cn(
           "transition-all duration-300",
           "lg:ml-64",
