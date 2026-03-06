@@ -330,6 +330,103 @@ export interface InterMunicipalMetrics {
   overallReadiness: number;
 }
 
+// --- Budget Analysis Types ---
+export type InvestmentHorizon = "short" | "medium" | "long";
+export type InvestmentCategory =
+  | "infrastructure"
+  | "technology"
+  | "social"
+  | "environmental"
+  | "institutional";
+
+export interface CostBenefitAnalysis {
+  id: string;
+  projectName: string;
+  category: InvestmentCategory;
+  description: string;
+  initialInvestment: number;
+  annualMaintenanceCost: number;
+  horizon: InvestmentHorizon;
+  horizonYears: number;
+  benefits: {
+    avoidedLosses: number;
+    socialBenefit: number;
+    economicGrowth: number;
+    environmentalBenefit: number;
+  };
+  npv: number; // Net Present Value
+  bcr: number; // Benefit-Cost Ratio
+  irr: number; // Internal Rate of Return (%)
+  paybackYears: number;
+  riskReduction: number; // percentage
+  relatedScenarios: string[];
+  status: "draft" | "under_review" | "approved" | "rejected";
+}
+
+export interface DisasterFinancialScenario {
+  id: string;
+  name: string;
+  description: string;
+  scenarioType: string;
+  probability: number;
+  recurrence: string; // e.g., "1 em 50 anos"
+  directCosts: {
+    infrastructure: number;
+    emergency: number;
+    healthcare: number;
+    housing: number;
+    environment: number;
+  };
+  indirectCosts: {
+    economicDisruption: number;
+    productivityLoss: number;
+    taxRevenueLoss: number;
+    socialImpact: number;
+  };
+  fundingSources: {
+    municipalBudget: number;
+    stateTransfer: number;
+    federalAid: number;
+    insurance: number;
+    internationalAid: number;
+    creditLines: number;
+  };
+  recoveryTimeMonths: number;
+  budgetImpactPercent: number;
+  fiscalRiskRating: "low" | "moderate" | "high" | "critical";
+}
+
+export interface InvestmentPlan {
+  id: string;
+  name: string;
+  description: string;
+  category: InvestmentCategory;
+  priority: number; // 1-100
+  totalCost: number;
+  yearlyAllocation: { year: number; amount: number }[];
+  expectedBenefits: number;
+  riskScore: number;
+  dependencies: string[];
+  status: "planned" | "approved" | "in_execution" | "completed" | "deferred";
+  startYear: number;
+  endYear: number;
+  fundingSource: string;
+  kpis: { name: string; target: number; current: number; unit: string }[];
+}
+
+export interface BudgetReport {
+  id: string;
+  title: string;
+  type: "cost_benefit" | "impact_analysis" | "investment_plan" | "accountability" | "funding_request";
+  generatedAt: string;
+  period: string;
+  summary: string;
+  keyFindings: string[];
+  recommendations: string[];
+  status: "draft" | "final" | "submitted";
+  targetAudience: string;
+}
+
 // --- Navigation ---
 export type ModulePage =
   | "dashboard"
@@ -338,4 +435,5 @@ export type ModulePage =
   | "simulation"
   | "monitoring"
   | "budget"
-  | "crisis";
+  | "crisis"
+  | "budget_analysis";

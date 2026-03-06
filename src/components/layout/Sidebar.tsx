@@ -14,6 +14,7 @@ import {
   ChevronRight,
   Bell,
   Siren,
+  Calculator,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -32,6 +33,7 @@ const navItems: { page: ModulePage; label: string; icon: typeof LayoutDashboard 
   { page: "monitoring", label: "Monitoramento", icon: Activity },
   { page: "budget", label: "Orçamento", icon: Wallet },
   { page: "crisis", label: "Gestão de Crises", icon: Siren },
+  { page: "budget_analysis", label: "Análise Orçamentária", icon: Calculator },
 ];
 
 export default function Sidebar({
