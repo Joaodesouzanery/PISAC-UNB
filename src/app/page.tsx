@@ -9,6 +9,7 @@ import AnalysisModule from "@/components/analysis/AnalysisModule";
 import SimulationModule from "@/components/simulation/SimulationModule";
 import MonitoringModule from "@/components/monitoring/MonitoringModule";
 import BudgetModule from "@/components/budget/BudgetModule";
+import CrisisModule from "@/components/crisis/CrisisModule";
 import { alerts } from "@/data/mock-data";
 import { cn } from "@/lib/utils";
 import type { ModulePage } from "@/types";
@@ -37,6 +38,10 @@ const pageConfig: Record<ModulePage, { title: string; subtitle: string }> = {
   budget: {
     title: "Gestão Orçamentária",
     subtitle: "Cruzamento orçamentário e investimentos em resiliência",
+  },
+  crisis: {
+    title: "Gestão de Crises Colaborativa",
+    subtitle: "Coordenação intermunicipal, comunicação e resposta a emergências",
   },
 };
 
@@ -77,6 +82,7 @@ export default function Home() {
           {currentPage === "simulation" && <SimulationModule />}
           {currentPage === "monitoring" && <MonitoringModule />}
           {currentPage === "budget" && <BudgetModule />}
+          {currentPage === "crisis" && <CrisisModule />}
         </div>
       </main>
     </div>

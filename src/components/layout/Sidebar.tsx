@@ -13,6 +13,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Bell,
+  Siren,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -30,6 +31,7 @@ const navItems: { page: ModulePage; label: string; icon: typeof LayoutDashboard 
   { page: "simulation", label: "Simulação de Riscos", icon: PlayCircle },
   { page: "monitoring", label: "Monitoramento", icon: Activity },
   { page: "budget", label: "Orçamento", icon: Wallet },
+  { page: "crisis", label: "Gestão de Crises", icon: Siren },
 ];
 
 export default function Sidebar({

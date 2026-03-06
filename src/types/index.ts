@@ -202,6 +202,134 @@ export interface HistoricalEvent {
   lessonsLearned: string[];
 }
 
+// --- Crisis Management Types ---
+export type CrisisStatus = "active" | "monitoring" | "resolved" | "escalated";
+export type CrisisLevel = "level_1" | "level_2" | "level_3" | "level_4";
+export type IncidentStatus = "open" | "in_progress" | "resolved" | "escalated";
+export type IncidentPriority = "low" | "medium" | "high" | "critical";
+
+export interface Crisis {
+  id: string;
+  title: string;
+  description: string;
+  status: CrisisStatus;
+  level: CrisisLevel;
+  startTime: string;
+  endTime?: string;
+  leadAgency: string;
+  affectedMunicipalities: string[];
+  incidents: string[]; // incident IDs
+  coordinationChannelId: string;
+}
+
+export interface Municipality {
+  id: string;
+  name: string;
+  state: string;
+  population: number;
+  lat: number;
+  lng: number;
+  status: "normal" | "alert" | "crisis" | "recovery";
+  activeCrises: number;
+  activeIncidents: number;
+  resourcesAvailable: number; // percentage
+  lastUpdate: string;
+}
+
+export interface Incident {
+  id: string;
+  crisisId: string;
+  title: string;
+  description: string;
+  status: IncidentStatus;
+  priority: IncidentPriority;
+  assignedTo: string;
+  assignedAgency: string;
+  municipality: string;
+  createdAt: string;
+  updatedAt: string;
+  deadline?: string;
+  location: string;
+  tags: string[];
+  updates: IncidentUpdate[];
+}
+
+export interface IncidentUpdate {
+  id: string;
+  timestamp: string;
+  author: string;
+  agency: string;
+  message: string;
+  type: "status_change" | "comment" | "resource_update" | "escalation" | "situation_report";
+}
+
+export interface CommunicationChannel {
+  id: string;
+  name: string;
+  type: "crisis_room" | "inter_municipal" | "agency" | "field_ops";
+  participants: ChannelParticipant[];
+  messages: ChannelMessage[];
+  crisisId?: string;
+  isActive: boolean;
+}
+
+export interface ChannelParticipant {
+  id: string;
+  name: string;
+  role: string;
+  agency: string;
+  municipality: string;
+  isOnline: boolean;
+}
+
+export interface ChannelMessage {
+  id: string;
+  senderId: string;
+  senderName: string;
+  senderAgency: string;
+  content: string;
+  timestamp: string;
+  type: "text" | "alert" | "resource_request" | "situation_report" | "decision";
+  priority?: "normal" | "urgent";
+}
+
+export interface CrisisResource {
+  id: string;
+  type: string;
+  name: string;
+  quantity: number;
+  available: number;
+  allocated: number;
+  municipality: string;
+  status: "available" | "deployed" | "in_transit" | "maintenance";
+  location: string;
+  lastUpdate: string;
+}
+
+export interface ContingencyPlan {
+  id: string;
+  title: string;
+  type: string;
+  description: string;
+  lastUpdated: string;
+  author: string;
+  municipality: string;
+  version: string;
+  tags: string[];
+  lessonsLearned: string[];
+}
+
+export interface InterMunicipalMetrics {
+  municipalityId: string;
+  municipalityName: string;
+  responseTimeMinutes: number;
+  activeIncidents: number;
+  resolvedLast24h: number;
+  resourceUtilization: number;
+  communicationScore: number;
+  overallReadiness: number;
+}
+
 // --- Navigation ---
 export type ModulePage =
   | "dashboard"
@@ -209,4 +337,5 @@ export type ModulePage =
   | "analysis"
   | "simulation"
   | "monitoring"
-  | "budget";
+  | "budget"
+  | "crisis";
